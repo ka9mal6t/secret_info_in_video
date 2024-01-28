@@ -115,7 +115,6 @@ public class LoginApp extends Application {
 
         @Override
         public void run() {
-            // Simulate network request
             ServerAnswer sa = RequestToServer.start();
             if (sa.getCodeAnswer() == 200) {
                 ServerAnswer saNew = RequestToServer.login(email, password, sa);

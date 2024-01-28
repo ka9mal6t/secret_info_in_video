@@ -1,25 +1,29 @@
 import os
-from flask import Flask, request, jsonify
+
+from flask import Flask, jsonify, request
 from flask_mail import Mail, Message
+
+import config
+from aes_operations import aes_decrypt, aes_encrypt
 from database_change_password import ChangePasswordDatabase
 from database_email_code import EmailsCodesDatabase
-from database_sessions import SessionsDatabase, SessionAlreadyExist, SessionNotFound, SessionTimeoutExceeded
-from database_users import UsersDatabase, UsernameIsBusy, EmailIsBusy, UserIsNotFound, PasswordIsWrong, \
-    PasswordNotCorrect, EmailNotCorrect, AttemptsLimit
+from database_sessions import (SessionAlreadyExist, SessionNotFound,
+                               SessionsDatabase, SessionTimeoutExceeded)
+from database_users import (AttemptsLimit, EmailIsBusy, EmailNotCorrect,
+                            PasswordIsWrong, PasswordNotCorrect,
+                            UserIsNotFound, UsernameIsBusy, UsersDatabase)
 from rsa_operations import rsa_encrypt
-from aes_operations import aes_encrypt, aes_decrypt
 from session_key import generate_session_key
-from config import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(16)
-app.config['MAIL_SERVER'] = MAIL_SERVER
-app.config['MAIL_PORT'] = MAIL_PORT
-app.config['MAIL_USE_TLS'] = MAIL_USE_TLS
-app.config['MAIL_USE_SSL'] = MAIL_USE_SSL
-app.config['MAIL_USERNAME'] = MAIL_USERNAME
-app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
-app.config['MAIL_DEFAULT_SENDER'] = MAIL_DEFAULT_SENDER
+app.config['MAIL_SERVER'] = config.MAIL_SERVER
+app.config['MAIL_PORT'] = config.MAIL_PORT
+app.config['MAIL_USE_TLS'] = config.MAIL_USE_TLS
+app.config['MAIL_USE_SSL'] = config.MAIL_USE_SSL
+app.config['MAIL_USERNAME'] = config.MAIL_USERNAME
+app.config['MAIL_PASSWORD'] = config.MAIL_PASSWORD
+app.config['MAIL_DEFAULT_SENDER'] = config.MAIL_DEFAULT_SENDER
 
 mail = Mail(app)
 
@@ -48,7 +52,7 @@ def create_session_key():
         code_cipher['session_key'] = ciphertext
 
         return jsonify(code_cipher), 200
-    except:
+    except Exception:
         return jsonify('Error!'), 404
 
 
@@ -162,7 +166,7 @@ def encrypt(username):
         return jsonify({'ciphertext': aes_encrypt(next_aes_key, aes_key),
                         'session_key': aes_encrypt(next_session_key, next_aes_key),
                         'error': 'User is not found'}), 201
-    except:
+    except Exception:
         return jsonify({'ciphertext': aes_encrypt(next_aes_key, aes_key),
                         'session_key': aes_encrypt(next_session_key, next_aes_key),
                         'error': 'Error server'}), 201
@@ -193,7 +197,7 @@ def decrypt():
                         'error': 'No authorization'}), 201
     try:
         message = UsersDatabase.use_user_private_key(user_id, aes_decrypt(message, aes_key))
-    except:
+    except Exception:
         return jsonify({'ciphertext': aes_encrypt(next_aes_key, aes_key),
                         'session_key': aes_encrypt(next_session_key, next_aes_key),
                         'error': 'No authorization'}), 201

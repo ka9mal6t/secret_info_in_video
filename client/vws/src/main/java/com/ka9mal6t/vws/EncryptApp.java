@@ -108,7 +108,7 @@ public class EncryptApp extends Application {
         return hbox;
     }
     private void saveVideoToFile(File file) throws IOException {
-        Path sourceVideoPath = Path.of(DIRECTORY_TO_CLEAR+"output.mp4");
+        Path sourceVideoPath = Paths.get(DIRECTORY_TO_CLEAR, "output.mp4");
         Files.copy(sourceVideoPath, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
     }

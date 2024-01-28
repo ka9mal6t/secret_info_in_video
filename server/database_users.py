@@ -1,44 +1,44 @@
-import sqlite3
-import aes_operations
-from rsa_operations import rsa_generate_keys
 import hashlib
 import re
+import sqlite3
+
+import aes_operations
 
 
 class UsernameIsBusy(Exception):
     def __str__(self):
-        return f"Username is busy"
+        return "Username is busy"
 
 
 class AttemptsLimit(Exception):
     def __str__(self):
-        return (f"The login attempt limit has been exceeded, your account is blocked. Try to recover it by changing "
-                f"your password.")
+        return ("The login attempt limit has been exceeded, your account is blocked. Try to recover it by changing "
+                "your password.")
 
 
 class PasswordNotCorrect(Exception):
     def __str__(self):
-        return f"Password not corrected"
+        return "Password not corrected"
 
 
 class EmailNotCorrect(Exception):
     def __str__(self):
-        return f"Email not corrected"
+        return "Email not corrected"
 
 
 class PasswordIsWrong(Exception):
     def __str__(self):
-        return f"Password is wrong"
+        return "Password is wrong"
 
 
 class EmailIsBusy(Exception):
     def __str__(self):
-        return f"Email is busy"
+        return "Email is busy"
 
 
 class UserIsNotFound(Exception):
     def __str__(self):
-        return f"User is not found"
+        return "User is not found"
 
 
 class UsersDatabase:
@@ -58,7 +58,7 @@ class UsersDatabase:
         password_hash = hashlib.sha256((email + password).encode('utf-8'))
         key = aes_operations.aes_generate_key()
         while UsersDatabase.user_exists_by_private_key(key):
-            keys = rsa_generate_keys()
+            key = aes_operations.aes_generate_key()
         with __connection:
             __cursor.execute(
                 "INSERT INTO `users` (`nickname`, `email`, `password`,`public_key`, `private_key`) "

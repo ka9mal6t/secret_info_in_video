@@ -13,8 +13,7 @@ CREATE TABLE users (
     public_key  TEXT    NOT NULL,
     private_key TEXT    NOT NULL
                         UNIQUE,
-    attempts    INTEGER NOT NULL
-                        DEFAULT (0) 
+    attempts    INTEGER NOT NULL DEFAULT (0)
 );
 CREATE TABLE sessions (
     session_key TEXT    UNIQUE

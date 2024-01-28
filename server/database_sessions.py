@@ -1,23 +1,24 @@
+import json
 import sqlite3
+import time as time_checker
+
 from aes_operations import aes_generate_key
 from session_key import generate_session_key
-import json
-import time as time_checker
 
 
 class SessionTimeoutExceeded(Exception):
     def __str__(self):
-        return f"Session timeout exceeded"
+        return "Session timeout exceeded"
 
 
 class SessionAlreadyExist(Exception):
     def __str__(self):
-        return f"Session is already exist"
+        return "Session is already exist"
 
 
 class SessionNotFound(Exception):
     def __str__(self):
-        return f"Session is not found"
+        return "Session is not found"
 
 
 class SessionsDatabase:
@@ -100,4 +101,3 @@ class SessionsDatabase:
                     __cursor.execute(
                         "DELETE FROM `sessions` WHERE `session_key` = (?)",
                         (session,))
-

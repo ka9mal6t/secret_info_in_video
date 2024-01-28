@@ -1,7 +1,8 @@
 import json
 import sqlite3
-from database_sessions import SessionNotFound, SessionTimeoutExceeded
 import time as time_checker
+
+from database_sessions import SessionNotFound, SessionTimeoutExceeded
 
 
 class EmailsCodesDatabase:
