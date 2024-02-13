@@ -91,7 +91,7 @@ public class SignupApp extends Application {
     }
 
     private boolean registrationCheck() {
-        if (Objects.equals(passwordField.getText(), confirmPasswordField.getText())){
+        if (! Objects.equals(passwordField.getText(), confirmPasswordField.getText())){
             Platform.runLater(() -> {
                 progressBar.setVisible(false);
                 backButton.setDisable(false);
