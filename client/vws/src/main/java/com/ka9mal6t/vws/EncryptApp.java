@@ -190,15 +190,22 @@ public class EncryptApp extends Application {
                     sa = saNew;
                     if (saNew.getCodeAnswer() == 200) {
 
-                        ImageEncryption.allEncrypt(DIRECTORY_TO_CLEAR, sa.getMessage());
-                        ImageEncryption.allEncrypt(DIRECTORY_TO_CLEAR, sa.getMessage());
-                        ImagesToVideo.run(DIRECTORY_TO_CLEAR, DIRECTORY_TO_CLEAR+"output.mp4");
+                        boolean res = ImageEncryption.allEncrypt(DIRECTORY_TO_CLEAR, sa.getMessage());
+                        if (res) {
+                            ImageEncryption.allEncryptOrigin(DIRECTORY_TO_CLEAR, sa.getMessage());
 
-                        encryptButton.setDisable(true);
-                        encryptButton.setStyle("-fx-background-color: #a9a9a9");
-                        downloadButton.setDisable(false);
-                        downloadButton.setStyle("-fx-background-color: #4caf50; -fx-text-fill: #ffffff;");
-                        progressBar.setVisible(false);
+                            ImagesToVideo.run(DIRECTORY_TO_CLEAR, DIRECTORY_TO_CLEAR + "output.mp4");
+
+                            encryptButton.setDisable(true);
+                            encryptButton.setStyle("-fx-background-color: #a9a9a9");
+                            downloadButton.setDisable(false);
+                            downloadButton.setStyle("-fx-background-color: #4caf50; -fx-text-fill: #ffffff;");
+                            progressBar.setVisible(false);
+                        }
+                        else {
+                            messageTextArea.setText("Not correct video size");
+                            progressBar.setVisible(false);
+                        }
                     } else if (saNew.getCodeAnswer() == 201) {
                         showToast(saNew.getError());
                     } else {

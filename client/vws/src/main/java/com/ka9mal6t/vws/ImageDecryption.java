@@ -73,7 +73,7 @@ public class ImageDecryption {
                     for (int l2 = 0; l2 < 32; l2++) {
                         int[] rgb2 = getRGB(im2.getRGB(i + l1, j + l2));
                         int[] rgb3 = getRGB(im3.getRGB(i + l1, j + l2));
-                        proxima += code[l1][l2] * (rgb3[0] - rgb2[0]);
+                        proxima += code[l1][l2] * (rgb3[2] - rgb2[2]);
                     }
                 }
                 if (proxima >= 0) {
