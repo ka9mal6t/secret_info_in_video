@@ -73,7 +73,9 @@ public class ImageDecryption {
                     for (int l2 = 0; l2 < 32; l2++) {
                         int[] rgb2 = getRGB(im2.getRGB(i + l1, j + l2));
                         int[] rgb3 = getRGB(im3.getRGB(i + l1, j + l2));
-                        proxima += code[l1][l2] * (rgb3[2] - rgb2[2]);
+                        int[] yCbCr2 = convertRGBtoYCbCr(rgb2);
+                        int[] yCbCr3 = convertRGBtoYCbCr(rgb3);
+                        proxima += code[l1][l2] * (yCbCr3[0] - yCbCr2[0]);
                     }
                 }
                 if (proxima >= 0) {
@@ -124,6 +126,34 @@ public class ImageDecryption {
         rgb[1] = (pixel >> 8) & 0xff;  // green
         rgb[2] = pixel & 0xff;         // blue
         return rgb;
+    }
+
+    private static int[] convertRGBtoYCbCr(int[] rgb) {
+        int R = rgb[0];
+        int G = rgb[1];
+        int B = rgb[2];
+
+        int Y = (int) (0.299 * R + 0.587 * G + 0.114 * B);
+        int Cb = (int) ((B - Y) * 0.564 + 128);
+        int Cr = (int) ((R - Y) * 0.713 + 128);
+
+        return new int[]{Y, Cb, Cr};
+    }
+    private static int convertYCbCrtoRGB(int[] ycbcr) {
+        int Y = ycbcr[0];
+        int Cb = ycbcr[1];
+        int Cr = ycbcr[2];
+
+        int R = (int) (Y + 1.402 * (Cr - 128));
+        int G = (int) (Y - 0.344136 * (Cb - 128) - 0.714136 * (Cr - 128));
+        int B = (int) (Y + 1.772 * (Cb - 128));
+
+        // Clip the values to [0, 255]
+        R = Math.min(255, Math.max(0, R));
+        G = Math.min(255, Math.max(0, G));
+        B = Math.min(255, Math.max(0, B));
+
+        return (R << 16) | (G << 8) | B;
     }
 
     private static int countOnes(List<Integer> list) {
